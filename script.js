@@ -1,41 +1,59 @@
-const gameBoard = (() => {
-  const boardContainer = document.querySelector(".board-container");
-
-  const board = Array(9).fill("");
-
-  const displayBoard = () => {
-    board.forEach((cell, index) => {
-      const divCell = document.createElement("div");
-      divCell.textContent = "X";
-      divCell.classList.add("cell");
-      divCell.dataset.cell = `${index}`;
-      boardContainer.append(divCell);
-    });
-  };
+const gameboard = (() => {
+  let board = Array(9).fill("");
 
   const resetBoard = () => {
-    const cellsNodeList = document.querySelectorAll(".cell");
-
-    cellsNodeList.forEach((cell) => {
-      if (cell.classList.contains("cell")) {
-        cell.textContent = "";
-      }
-    });
+    for (let i = 0; i < board.length; i++) {
+      board[i] = "";
+    }
+    boardView.displayBoard(board);
   };
 
-  displayBoard();
+  const placeMark = (index, mark) => {
+    board[index] = mark;
+  };
 
   return {
     board,
-    displayBoard,
     resetBoard,
+    placeMark,
   };
 })();
 
-const displayController = () => {
-  let mark;
-};
+const boardView = (() => {
+  const boardContainer = document.querySelector(".board-container");
 
-const playerFactory = (name, mark) => {
-  return { name, mark };
-};
+  const displayBoard = (board) => {
+    clearBoard();
+    board.forEach((cell, index) => {
+      const divCell = document.createElement("div");
+      divCell.textContent = `${cell}`;
+      divCell.classList.add("cell");
+      divCell.dataset.cell = `${index}`;
+      boardContainer.append(divCell);
+      console.log(cell);
+    });
+  };
+
+  const clearBoard = () => {
+    boardContainer.textContent = "";
+  };
+
+  return { displayBoard };
+})();
+
+const displayController = (() => {
+  const resetButton = document.querySelector(".reset");
+  const players = [
+    { name: "player X", mark: "X" },
+    { name: "player O", mark: "O" },
+  ];
+
+  gameboard.placeMark(0, "X");
+  boardView.displayBoard(gameboard.board);
+
+  resetButton.addEventListener("click", gameboard.resetBoard);
+
+  return { players };
+})();
+
+boardView.displayBoard(gameboard.board);
