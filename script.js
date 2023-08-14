@@ -5,7 +5,6 @@ const gameboard = (() => {
     for (let i = 0; i < board.length; i++) {
       board[i] = "";
     }
-    boardView.displayBoard(board);
   };
 
   const placeMark = (index, mark) => {
@@ -51,7 +50,10 @@ const displayController = (() => {
   gameboard.placeMark(0, "X");
   boardView.displayBoard(gameboard.board);
 
-  resetButton.addEventListener("click", gameboard.resetBoard);
+  resetButton.addEventListener("click", () => {
+    gameboard.resetBoard();
+    boardView.displayBoard(gameboard.board);
+  });
 
   return { players };
 })();
