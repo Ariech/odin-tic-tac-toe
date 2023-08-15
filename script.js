@@ -28,20 +28,18 @@ const boardView = (() => {
       divCell.textContent = `${cell}`;
       divCell.classList.add("cell");
       divCell.dataset.cell = `${index}`;
-
-      divCell.addEventListener("click", (e) => {
-        displayController.placeMarkOnBoard(
-          e,
-          gameState.getCurrentPlayer().mark
-        );
-        gameboard.placeMark(
-          e.target.dataset.cell,
-          gameState.getCurrentPlayer().mark
-        );
-        gameState.changePlayerTurn();
-      });
-
       boardContainer.append(divCell);
+    });
+  };
+
+  const handleClicksOnBoard = () => {
+    boardContainer.addEventListener("click", (e) => {
+      displayController.placeMarkOnBoard(e, gameState.getCurrentPlayer().mark);
+      gameboard.placeMark(
+        e.target.dataset.cell,
+        gameState.getCurrentPlayer().mark
+      );
+      gameState.changePlayerTurn();
     });
   };
 
@@ -49,7 +47,7 @@ const boardView = (() => {
     boardContainer.textContent = "";
   };
 
-  return { displayBoard };
+  return { displayBoard, handleClicksOnBoard };
 })();
 
 const displayController = (() => {
@@ -68,6 +66,7 @@ const displayController = (() => {
   resetButton.addEventListener("click", () => {
     gameboard.resetBoard();
     boardView.displayBoard(gameboard.board);
+    gameState.setInitPlayer();
   });
 
   return { placeMarkOnBoard };
@@ -83,11 +82,14 @@ const gameState = (() => {
 
   const getCurrentPlayer = () => activePlayer;
 
+  const setInitPlayer = () => (activePlayer = players[0]);
+
   const changePlayerTurn = () => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
   };
 
-  return { getCurrentPlayer, changePlayerTurn };
+  return { getCurrentPlayer, setInitPlayer, changePlayerTurn };
 })();
 
 boardView.displayBoard(gameboard.board);
+boardView.handleClicksOnBoard();
