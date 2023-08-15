@@ -28,8 +28,20 @@ const boardView = (() => {
       divCell.textContent = `${cell}`;
       divCell.classList.add("cell");
       divCell.dataset.cell = `${index}`;
+
+      divCell.addEventListener("click", (e) => {
+        displayController.placeMarkOnBoard(
+          e,
+          gameState.getCurrentPlayer().mark
+        );
+        gameboard.placeMark(
+          e.target.dataset.cell,
+          gameState.getCurrentPlayer().mark
+        );
+        gameState.changePlayerTurn();
+      });
+
       boardContainer.append(divCell);
-      console.log(cell);
     });
   };
 
@@ -42,20 +54,40 @@ const boardView = (() => {
 
 const displayController = (() => {
   const resetButton = document.querySelector(".reset");
-  const players = [
-    { name: "player X", mark: "X" },
-    { name: "player O", mark: "O" },
-  ];
 
-  gameboard.placeMark(0, "X");
-  boardView.displayBoard(gameboard.board);
+  const placeMarkOnBoard = (e, currentPlayerMark) => {
+    if (e.target.textContent !== "") {
+      return;
+    }
+    e.target.textContent = currentPlayerMark;
+  };
+
+  // gameboard.placeMark(0, "X");
+  // boardView.displayBoard(gameboard.board);
 
   resetButton.addEventListener("click", () => {
     gameboard.resetBoard();
     boardView.displayBoard(gameboard.board);
   });
 
-  return { players };
+  return { placeMarkOnBoard };
+})();
+
+const gameState = (() => {
+  const players = [
+    { name: "player X", mark: "X" },
+    { name: "player O", mark: "O" },
+  ];
+
+  let activePlayer = players[0];
+
+  const getCurrentPlayer = () => activePlayer;
+
+  const changePlayerTurn = () => {
+    activePlayer = activePlayer === players[0] ? players[1] : players[0];
+  };
+
+  return { getCurrentPlayer, changePlayerTurn };
 })();
 
 boardView.displayBoard(gameboard.board);
