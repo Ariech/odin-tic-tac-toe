@@ -46,25 +46,37 @@ const displayController = (() => {
   const boardContainer = document.querySelector(".board-container");
 
   const placeMarkOnBoard = (e, currentPlayerMark) => {
-    if (e.target.matches(".cell")) {
-      if (e.target.textContent !== "") {
-        return;
-      }
-      e.target.textContent = currentPlayerMark;
+    if (e.target.textContent !== "") {
+      return;
     }
+    e.target.textContent = currentPlayerMark;
   };
 
-  const handleClicksOnBoard = () => {
-    boardContainer.addEventListener("click", (e) => {
+  const createListenerOnBoard = () => {
+    boardContainer.addEventListener("click", handleClicksOnBoard);
+  };
+
+  const handleClicksOnBoard = (e) => {
+    if (e.target.dataset.cell && e.target.textContent === "") {
       displayController.placeMarkOnBoard(e, gameState.getCurrentPlayer().mark);
       gameBoard.placeMark(
         e.target.dataset.cell,
         gameState.getCurrentPlayer().mark
       );
+      const isWin = gameState.checkForWinner();
+      const isTie = gameState.checkForTie();
 
-      gameState.checkForWinner();
+      if (isWin) {
+        console.log(`Player ${gameState.getCurrentPlayer().name} won`);
+        displayController.disableClickingOnBoard();
+      }
+
+      if (isTie) {
+        console.log(`It's a tie!`);
+      }
+
       gameState.changePlayerTurn();
-    });
+    }
   };
 
   const disableClickingOnBoard = () => {
@@ -75,9 +87,15 @@ const displayController = (() => {
     gameBoard.resetBoard();
     boardView.displayBoard(gameBoard.getBoard());
     gameState.setInitPlayer();
+    createListenerOnBoard();
   });
 
-  return { placeMarkOnBoard, handleClicksOnBoard, disableClickingOnBoard };
+  return {
+    placeMarkOnBoard,
+    handleClicksOnBoard,
+    disableClickingOnBoard,
+    createListenerOnBoard,
+  };
 })();
 
 const gameState = (() => {
@@ -120,13 +138,25 @@ const gameState = (() => {
       );
       if (match) {
         win = true;
-        console.log(`Player ${getCurrentPlayer().name} won`);
       }
     });
+    return win;
   };
 
-  return { getCurrentPlayer, setInitPlayer, changePlayerTurn, checkForWinner };
+  const checkForTie = () => {
+    const tie = board.every((item) => item !== "");
+
+    return tie;
+  };
+
+  return {
+    getCurrentPlayer,
+    setInitPlayer,
+    changePlayerTurn,
+    checkForWinner,
+    checkForTie,
+  };
 })();
 
 boardView.displayBoard(gameBoard.getBoard());
-displayController.handleClicksOnBoard();
+displayController.createListenerOnBoard();
