@@ -81,7 +81,6 @@ const displayController = (() => {
   });
 
   return {
-    handleClicksOnBoard,
     createListenerOnBoard,
     removeListenerOnBoard,
   };
@@ -121,7 +120,9 @@ const gameState = (() => {
   const checkForWinner = () => {
     let win = false;
 
+    // Iterate over winning combos
     winningCombo.forEach((combination) => {
+      // Check if the current index of the combination matches the mark of the active player
       const match = combination.every(
         (index) => board[index] === getCurrentPlayerMark()
       );
@@ -133,6 +134,7 @@ const gameState = (() => {
   };
 
   const checkForTie = () => {
+    // Check if every position on the board has a mark on it
     const tie = board.every((item) => item !== "");
 
     return tie;
@@ -153,7 +155,6 @@ const gameState = (() => {
   };
 
   return {
-    getCurrentPlayer,
     getCurrentPlayerMark,
     setInitPlayer,
     changePlayerTurn,
