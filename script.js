@@ -56,31 +56,21 @@ const displayController = (() => {
     boardContainer.addEventListener("click", handleClicksOnBoard);
   };
 
-  const handleClicksOnBoard = (e) => {
-    if (e.target.dataset.cell && e.target.textContent === "") {
-      displayController.placeMarkOnBoard(e, gameState.getCurrentPlayer().mark);
-      gameBoard.placeMark(
-        e.target.dataset.cell,
-        gameState.getCurrentPlayer().mark
-      );
-      const isWin = gameState.checkForWinner();
-      const isTie = gameState.checkForTie();
-
-      if (isWin) {
-        console.log(`Player ${gameState.getCurrentPlayer().name} won`);
-        displayController.disableClickingOnBoard();
-      }
-
-      if (isTie) {
-        console.log(`It's a tie!`);
-      }
-
-      gameState.changePlayerTurn();
-    }
+  const removeListenerOnBoard = () => {
+    boardContainer.removeEventListener("click", handleClicksOnBoard);
   };
 
-  const disableClickingOnBoard = () => {
-    boardContainer.removeEventListener("click", handleClicksOnBoard);
+  const handleClicksOnBoard = (e) => {
+    if (e.target.dataset.cell && e.target.textContent === "") {
+      placeMarkOnBoard(e, gameState.getCurrentPlayerMark());
+      gameBoard.placeMark(
+        e.target.dataset.cell,
+        gameState.getCurrentPlayerMark()
+      );
+
+      gameState.checkGameCondition();
+      gameState.changePlayerTurn();
+    }
   };
 
   resetButton.addEventListener("click", () => {
@@ -91,10 +81,9 @@ const displayController = (() => {
   });
 
   return {
-    placeMarkOnBoard,
     handleClicksOnBoard,
-    disableClickingOnBoard,
     createListenerOnBoard,
+    removeListenerOnBoard,
   };
 })();
 
@@ -149,12 +138,26 @@ const gameState = (() => {
     return tie;
   };
 
+  const checkGameCondition = () => {
+    const isWin = checkForWinner();
+    const isTie = checkForTie();
+
+    if (isWin) {
+      console.log(`Player ${getCurrentPlayer().name} won`);
+      displayController.removeListenerOnBoard();
+    }
+
+    if (isTie && !isWin) {
+      console.log(`It's a tie!`);
+    }
+  };
+
   return {
     getCurrentPlayer,
+    getCurrentPlayerMark,
     setInitPlayer,
     changePlayerTurn,
-    checkForWinner,
-    checkForTie,
+    checkGameCondition,
   };
 })();
 
