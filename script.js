@@ -1,3 +1,5 @@
+const boardContainer = document.querySelector(".board-container");
+
 const gameBoard = (() => {
   let board = Array(9).fill("");
 
@@ -21,8 +23,6 @@ const gameBoard = (() => {
 })();
 
 const boardView = (() => {
-  const boardContainer = document.querySelector(".board-container");
-
   const displayBoard = (board) => {
     clearBoard();
     board.forEach((cell, index) => {
@@ -43,7 +43,6 @@ const boardView = (() => {
 
 const displayController = (() => {
   const resetButton = document.querySelector(".reset");
-  const boardContainer = document.querySelector(".board-container");
 
   const placeMarkOnBoard = (e, currentPlayerMark) => {
     if (e.target.textContent !== "") {
@@ -128,6 +127,9 @@ const gameState = (() => {
       );
       if (match) {
         win = true;
+        combination.forEach((index) =>
+          boardContainer.childNodes[index].classList.add("cell-winning")
+        );
       }
     });
     return win;
