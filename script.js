@@ -1,4 +1,5 @@
 const boardContainer = document.querySelector(".board-container");
+const playerTurn = document.querySelector(".turn");
 
 const gameBoard = (() => {
   let board = Array(9).fill("");
@@ -43,6 +44,11 @@ const boardView = (() => {
 
 const displayController = (() => {
   const resetButton = document.querySelector(".reset");
+  const playerTurn = document.querySelector(".turn");
+
+  const showPlayerTurn = () => {
+    playerTurn.textContent = `Player ${gameState.getCurrentPlayer().name} turn`;
+  };
 
   const placeMarkOnBoard = (e, currentPlayerMark) => {
     if (e.target.textContent !== "") {
@@ -66,9 +72,7 @@ const displayController = (() => {
         e.target.dataset.cell,
         gameState.getCurrentPlayerMark()
       );
-
       gameState.checkGameCondition();
-      gameState.changePlayerTurn();
     }
   };
 
@@ -82,6 +86,7 @@ const displayController = (() => {
   return {
     createListenerOnBoard,
     removeListenerOnBoard,
+    showPlayerTurn,
   };
 })();
 
@@ -146,18 +151,28 @@ const gameState = (() => {
     const isWin = checkForWinner();
     const isTie = checkForTie();
 
+    if (!isWin) {
+      gameState.changePlayerTurn();
+      displayController.showPlayerTurn();
+    }
+
     if (isWin) {
-      console.log(`Player ${getCurrentPlayer().name} won`);
+      playerTurn.textContent = `Player ${
+        gameState.getCurrentPlayer().name
+      } won!`;
       displayController.removeListenerOnBoard();
+      return true;
     }
 
     if (isTie && !isWin) {
-      console.log(`It's a tie!`);
+      playerTurn.textContent = `It's a tie!`;
+      return true;
     }
   };
 
   return {
     getCurrentPlayerMark,
+    getCurrentPlayer,
     setInitPlayer,
     changePlayerTurn,
     checkGameCondition,
@@ -166,3 +181,4 @@ const gameState = (() => {
 
 boardView.displayBoard(gameBoard.getBoard());
 displayController.createListenerOnBoard();
+displayController.showPlayerTurn();
