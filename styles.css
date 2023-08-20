@@ -3,6 +3,9 @@
 :root {
   --box-shadow-value: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
   --blue: #0891b2;
+  --background-color: #f8f9fa;
+  --cell-hover: #d4cfcf;
+  --cell-winning: #689139;
 }
 
 * {
@@ -14,7 +17,7 @@
 html,
 body {
   height: 100%;
-  background-color: #f8f9fa;
+  background-color: var(--background-color);
   font-family: "Roboto", sans-serif;
 }
 
@@ -42,15 +45,14 @@ body {
   background-color: white;
   box-shadow: var(--box-shadow-value);
   border-radius: 2rem;
-  /* border: 2px black solid; */
 }
 
 .cell:hover {
-  background-color: #d4cfcf;
+  background-color: var(--cell-hover);
 }
 
 .cell-winning {
-  background-color: #689139;
+  background-color: var(--cell-winning);
   pointer-events: none;
 }
 
