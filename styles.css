@@ -2,6 +2,7 @@
 
 :root {
   --box-shadow-value: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+  --blue: #0891b2;
 }
 
 * {
@@ -20,6 +21,8 @@ body {
 .container {
   height: 100%;
   display: flex;
+  flex-direction: column;
+  gap: 2rem;
   align-items: center;
   justify-content: center;
 }
@@ -47,6 +50,20 @@ body {
 }
 
 .cell-winning {
-  background-color: #913939;
+  background-color: #689139;
   pointer-events: none;
+}
+
+.turn {
+  font-size: 3rem;
+}
+
+.reset {
+  border: none;
+  color: white;
+  padding: 2rem 3rem;
+  font-size: 1.5rem;
+  background-color: var(--blue);
+  border-radius: 2rem;
+  cursor: pointer;
 }
